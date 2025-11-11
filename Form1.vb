@@ -6,7 +6,7 @@
 ' 競賽資訊: 113 學年度工業類科學生技藝競賽 - 電腦修護職種
 ' 開發單位: 新化高工
 ' 崗位編號: 01
-' 最後更新: 2025-01-XX
+' 最後更新: 2025-11-11
 '==============================================================================
 
 Imports System.IO.Ports                ' 序列埠通訊相關類別
@@ -65,8 +65,9 @@ Public Class Form1
     ''' 3. 載入可用的 COM Port 清單（P3）
     ''' 4. 初始化 CPU 和 RAM 效能計數器
     ''' 5. 啟動 COM Port 熱插拔監控
-    ''' 6. 設定初始 UI 狀態
-    ''' 7. 啟用 CPU 和 RAM 監控按鈕（獨立於連線狀態）
+    ''' 6. 設定初始 UI 狀態（未連線）
+    ''' 
+    ''' 注意：CPU 和 RAM 監控按鈕需要連線後才會啟用
     ''' </remarks>
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' P1: 設定視窗標題列文字
@@ -91,12 +92,11 @@ Public Class Form1
 
         ' 設定初始連線狀態為「未連線」
         ' 會更新 UI 元件的啟用/停用狀態
+        ' 此方法會自動停用 CPU 和 RAM 監控按鈕
         UpdateConnectionStatus(False)
 
-        ' 啟用 CPU 和 RAM 監控按鈕
-        ' 即使未連線藍芽也可以執行本地監控
-        ButtonStartCPU.Enabled = True
-        ButtonStartRAM.Enabled = True
+        ' 注意：移除了直接啟用監控按鈕的程式碼
+        ' 監控按鈕現在只有在連線後才會啟用
     End Sub
 
     '==========================================================================
@@ -207,7 +207,7 @@ Public Class Form1
     ''' 2. 設定序列埠參數（Baud Rate, Data Bits, Parity, Stop Bits）
     ''' 3. 開啟序列埠連線
     ''' 4. 發送連線確認字元 'c' 至 Arduino
-    ''' 5. 更新 UI 連線狀態
+    ''' 5. 更新 UI 連線狀態（啟用監控按鈕）
     ''' 6. 顯示連線成功訊息
     ''' 
     ''' 序列埠參數說明:
@@ -252,16 +252,23 @@ Public Class Form1
             ' 作為連線確認訊號，Arduino 端可據此判斷 PC 已連線
             SerialPort1.Write("c")
 
+            ' 除錯訊息：確認連線成功
+            Debug.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] COM Port 連線成功")
+            Debug.WriteLine($"  - Port: {SerialPort1.PortName}")
+            Debug.WriteLine($"  - Baud Rate: {SerialPort1.BaudRate}")
+            Debug.WriteLine($"  - 連線確認字元 'c' 已發送")
+
             ' 更新 UI 狀態為「已連線」
-            ' 會啟用 Close 按鈕和 Write 按鈕
+            ' 會啟用 Close 按鈕、Write 按鈕和監控按鈕
             UpdateConnectionStatus(True)
 
             ' 顯示連線成功的提示訊息
-            MessageBox.Show("連線成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("連線成功！現在可以啟動 CPU 和 RAM 監控。", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
         Catch ex As Exception
             ' 捕捉任何連線過程中發生的例外
             ' 常見錯誤: COM Port 不存在、存取被拒、已被佔用
+            Debug.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] COM Port 連線失敗：{ex.Message}")
             MessageBox.Show($"無法開啟 COM Port：{ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
@@ -328,14 +335,15 @@ Public Class Form1
     ''' - 停用 Open 按鈕（避免重複開啟）
     ''' - 啟用 Close 按鈕
     ''' - 啟用 Write to EEPROM 按鈕（需要連線才能寫入）
+    ''' - 啟用 CPU 和 RAM 監控按鈕（需要連線才能監控）
     ''' 
     ''' 未連線時:
     ''' - 連線狀態標籤顯示紅色 "Disconnect"
     ''' - 啟用 Open 按鈕
     ''' - 停用 Close 按鈕
     ''' - 停用 Write to EEPROM 按鈕
-    ''' 
-    ''' 注意: CPU 和 RAM 監控按鈕不受連線狀態影響，可獨立運作
+    ''' - 停用 CPU 和 RAM 監控按鈕
+    ''' - 自動停止正在執行的監控
     ''' </remarks>
     Private Sub UpdateConnectionStatus(isConnected As Boolean)
         If isConnected Then
@@ -349,6 +357,10 @@ Public Class Form1
             ButtonOpen.Enabled = False   ' 停用 Open 按鈕（已連線）
             ButtonClose.Enabled = True   ' 啟用 Close 按鈕
             ButtonWrite.Enabled = True   ' 啟用 EEPROM 寫入按鈕
+
+            ' 連線後才啟用 CPU 和 RAM 監控按鈕
+            ButtonStartCPU.Enabled = True
+            ButtonStartRAM.Enabled = True
         Else
             ' ===== 未連線狀態 =====
 
@@ -360,6 +372,26 @@ Public Class Form1
             ButtonOpen.Enabled = True    ' 啟用 Open 按鈕
             ButtonClose.Enabled = False  ' 停用 Close 按鈕（未連線）
             ButtonWrite.Enabled = False  ' 停用 EEPROM 寫入按鈕（需要連線）
+
+            ' 未連線時停用監控按鈕
+            ButtonStartCPU.Enabled = False
+            ButtonStartRAM.Enabled = False
+
+            ' 如果 CPU 監控正在執行，則自動停止
+            If TimerCPU.Enabled Then
+                TimerCPU.Stop()
+                ButtonStopCPU.Enabled = False
+                PanelCPUColor.BackColor = Color.Gray
+                LabelCPUValue.Text = "0 %"
+            End If
+
+            ' 如果 RAM 監控正在執行，則自動停止
+            If TimerRAM.Enabled Then
+                TimerRAM.Stop()
+                ButtonStopRAM.Enabled = False
+                PanelRAMColor.BackColor = Color.Gray
+                LabelRAMValue.Text = "0 %"
+            End If
         End If
     End Sub
 
@@ -689,8 +721,18 @@ Public Class Form1
             ' ToArray() 將 List(Of Byte) 轉換為 Byte()
             SerialPort1.Write(packet.ToArray(), 0, packet.Count)
 
+            ' 除錯訊息：顯示傳送的封包資訊（開發階段使用）
+            Debug.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] 發送 {type} 封包：")
+            Debug.WriteLine($"  - 使用率: {percent}%")
+            Debug.WriteLine($"  - RGB: ({color.R}, {color.G}, {color.B})")
+            Debug.WriteLine($"  - Checksum: 0x{checksum:X2}")
+            Debug.WriteLine($"  - 封包內容: {String.Join(" ", packet.Select(Function(b) $"0x{b:X2}"))}")
+
         Catch ex As Exception
-            ' 傳送失敗時採用靜默處理
+            ' 傳送失敗時顯示錯誤訊息（開發階段用）
+            Debug.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] 傳送失敗：{ex.Message}")
+
+            ' 生產環境可採用靜默處理
             ' 不顯示錯誤訊息，避免中斷監控流程
             ' 常見原因: 連線中斷、Arduino 未回應
         End Try
