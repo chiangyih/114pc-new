@@ -185,8 +185,8 @@ Public Class Form1
     ''' 3. 更新標籤顯示（例如: "65 %"）
     ''' 4. 根據使用率判斷顏色（綠/黃/紅）
     ''' 5. 更新顏色方塊背景色
-    ''' 6. 若已連線，則傳送 "LOAD" + 數值 + 換行符號至 Arduino
-    '''    例如: "LOAD30\n", "LOAD65\n", "LOAD90\n"
+    ''' 6. 若已連線，則傳送 "LOAD " + 數值 + 換行符號至 Arduino
+    '''    例如: "LOAD 30\n", "LOAD 65\n", "LOAD 90\n"
     ''' </remarks>
     Private Sub TimerCPU_Tick(sender As Object, e As EventArgs) Handles TimerCPU.Tick
         Try
@@ -209,11 +209,11 @@ Public Class Form1
             PanelCPUColor.BackColor = color
 
             ' 若序列埠處於開啟狀態（已連線 Arduino）
-            ' 傳送 "LOAD" + CPU 使用率 + 換行符號
+            ' 傳送 "LOAD " + CPU 使用率 + 換行符號
             ' 換行符號用於 Arduino 端使用 Serial.readStringUntil('\n') 解析
-            ' 例如: "LOAD30\n", "LOAD65\n", "LOAD90\n"
+            ' 例如: "LOAD 30\n", "LOAD 65\n", "LOAD 90\n"
             If SerialPort1.IsOpen Then
-                SerialPort1.Write($"LOAD{cpuPercent}" & vbLf)
+                SerialPort1.Write($"LOAD {cpuPercent}" & vbLf)
             End If
 
         Catch ex As Exception
@@ -241,8 +241,8 @@ Public Class Form1
     ''' </summary>
     ''' <remarks>
     ''' 執行流程與 CPU 監控相同，但讀取的是 RAM 使用率
-    ''' 傳送格式: "LOAD" + 數值 + 換行符號
-    ''' 例如: "LOAD20\n", "LOAD55\n", "LOAD88\n"
+    ''' 傳送格式: "LOAD " + 數值 + 換行符號
+    ''' 例如: "LOAD 20\n", "LOAD 55\n", "LOAD 88\n"
     ''' </remarks>
     Private Sub TimerRAM_Tick(sender As Object, e As EventArgs) Handles TimerRAM.Tick
         Try
@@ -261,11 +261,11 @@ Public Class Form1
             ' 更新顏色方塊的背景色
             PanelRAMColor.BackColor = color
 
-            ' 若已連線，則傳送 "LOAD" + RAM 使用率 + 換行符號
+            ' 若已連線，則傳送 "LOAD " + RAM 使用率 + 換行符號
             ' 換行符號用於 Arduino 端使用 Serial.readStringUntil('\n') 解析
-            ' 例如: "LOAD20\n", "LOAD55\n", "LOAD88\n"
+            ' 例如: "LOAD 20\n", "LOAD 55\n", "LOAD 88\n"
             If SerialPort1.IsOpen Then
-                SerialPort1.Write($"LOAD{ramPercent}" & vbLf)
+                SerialPort1.Write($"LOAD {ramPercent}" & vbLf)
             End If
 
         Catch ex As Exception
