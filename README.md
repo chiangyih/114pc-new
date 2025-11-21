@@ -1,6 +1,6 @@
 ﻿# 114 工科賽電腦修護職種 - PC 監控系統
 
-Last Update 2025-11-21 11:16
+Last Update 2025-11-21 12:41
 
 ## 📋 專案簡介
 
@@ -37,14 +37,40 @@ Last Update 2025-11-21 11:16
 ```
 114pc-new/
 │
+├── 114pc-new.sln                     # Visual Studio 方案檔
+├── 114pc-new.vbproj                  # Visual Basic 專案檔
+├── 114pc-new.vbproj.user             # 專案使用者設定
+│
 ├── Form1.vb                          # 主程式邏輯
 ├── Form1.Designer.vb                 # UI 設計檔案（自動生成）
-├── Form1.resx                        # 資源檔案
-├── README.md                         # 專案說明文件
-├── CPU_RAM_Loading_Data_Format.md   # 資料格式詳細說明
-└── My Project/
-    └── Application.Designer.vb       # 應用程式設定
+├── Form1.resx                        # 資源檔案（控件、圖片等）
+├── ApplicationEvents.vb              # 應用程式事件定義
+│
+├── README.md                         # 專案說明文件（本檔案）
+│
+├── My Project/
+│   └── Application.Designer.vb       # 應用程式設定
+│
+├── .gitignore                        # Git 忽略檔案清單
+├── .gitattributes                    # Git 屬性設定
+│
+└── obj/                              # 編譯輸出目錄（自動生成）
+    └── Debug/
+        └── net8.0-windows/           # .NET 8 Windows 目標框架輸出
 ```
+
+### 重要檔案說明
+
+| 檔案/目錄 | 說明 |
+|----------|------|
+| **Form1.vb** | 主要程式邏輯，包含所有功能實現 |
+| **Form1.Designer.vb** | Windows Form 設計器自動生成的控件定義 |
+| **Form1.resx** | 資源檔案，存放嵌入式資源（字串、圖片等） |
+| **ApplicationEvents.vb** | 應用程式生命週期事件（Startup、Shutdown等） |
+| **114pc-new.vbproj** | 專案配置檔，定義編譯參數、依賴等 |
+| **My Project/Application.Designer.vb** | 應用程式全域設定 |
+| **.gitignore** | Git 版本控制忽略規則 |
+| **.gitattributes** | Git 換行符號和編碼設定 |
 
 ---
 
