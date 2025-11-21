@@ -1,6 +1,7 @@
 ﻿# 114 工科賽電腦修護職種 - PC 監控系統
 
 Last Update 2025-11-21 12:41
+<img width="802" height="482" alt="image" src="https://github.com/user-attachments/assets/06379281-4c39-4cbe-93ac-410c227938c7" />
 
 ## 📋 專案簡介
 
