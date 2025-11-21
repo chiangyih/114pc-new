@@ -236,20 +236,21 @@ LOAD90\n  (CPU 或 RAM 使用率 90%)
 
 ### EEPROM 寫入封包格式
 
-**格式**: `[SOF][CMD][LEN][Data][CHK][EOF]`
+**新格式**: `"WRITE" + 數值 + "\n"`
 
 ```
-欄位說明:
-SOF  - 0xFF (封包起始)
-CMD  - 0x45 ('E', EEPROM 命令)
-LEN  - 0x01 (資料長度 1 byte)
-Data - 0x00~0x0F (十進位 0-15)
-CHK  - Data & 0xFF (檢查碼)
-EOF  - 0xFE (封包結束)
-
-範例: 寫入數值 10
-0xFF 0x45 0x01 0x0A 0x0A 0xFE
+範例:
+WRITE0\n   (EEPROM 寫入十進位 0)
+WRITE5\n   (EEPROM 寫入十進位 5)
+WRITE12\n  (EEPROM 寫入十進位 12)
+WRITE15\n  (EEPROM 寫入十進位 15)
 ```
+
+**特點**:
+- 與 CPU/RAM 監控格式一致（都是文字 + 換行符號）
+- Arduino 可用相同的 `Serial.readStringUntil('\n')` 讀取
+- 判斷字串開頭是 "LOAD" 還是 "WRITE" 執行對應功能
+- 簡化通訊協定，提高可讀性
 
 ### 連線確認
 
