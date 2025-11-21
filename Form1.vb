@@ -349,17 +349,11 @@ Public Class Form1
 
         Try
             Dim decimalValue As Integer = Convert.ToInt32(input, 2)
-            Dim packet As New List(Of Byte) From {
-                PACKET_SOF,
-                CMD_EEPROM,
-                1,
-                CByte(decimalValue),
-                CByte(decimalValue And &HFF),
-                PACKET_EOF
-            }
 
             If SerialPort1.IsOpen Then
-                SerialPort1.Write(packet.ToArray(), 0, packet.Count)
+                ' 傳送格式: "WRITE" + 數值 + 換行符號
+                ' 例如: "WRITE 5\n", "WRITE 12\n"
+                SerialPort1.Write($"WRITE {decimalValue}" & vbLf)
                 ShowMessage($"已寫入 EEPROM：二進位 {input} → 十進位 {decimalValue}",
                           "成功", MessageBoxIcon.Information)
             Else
