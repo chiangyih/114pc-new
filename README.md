@@ -114,7 +114,7 @@ Last Update 2025-11-21 12:41
 
 ### 核心方法列表
 
-#### 初始化模塊
+#### 初始化模組
 
 ```visualbasic
 ' 程式啟動
@@ -125,7 +125,7 @@ Form1_Load(sender As Object, e As EventArgs)
     └─ UpdateConnectionStatus(False)   ' 設定初始連線狀態為 Disconnect
 ```
 
-#### 連線管理模塊
+#### 連線管理模組
 
 ```visualbasic
 ' COM Port 偵測與管理
@@ -157,7 +157,7 @@ InitializePortWatcher()         ' 初始化 WMI 事件監聽
 OnPortChanged()                 ' COM Port 變更時自動重新載入清單
 ```
 
-#### CPU 監控模塊
+#### CPU 監控模組
 
 ```visualbasic
 ' CPU 監控控制
@@ -178,7 +178,7 @@ TimerCPU_Tick(sender As Object, e As EventArgs)
   └─ 若已連線，則傳送 "LOAD " + cpuPercent + vbLf
 ```
 
-#### RAM 監控模塊
+#### RAM 監控模組
 
 ```visualbasic
 ' RAM 監控控制
@@ -202,7 +202,7 @@ TimerRAM_Tick(sender As Object, e As EventArgs)
 GetRAMUsage() As Single         ' 從效能計數器讀取 RAM %
 ```
 
-#### EEPROM 寫入模塊
+#### EEPROM 寫入模組
 
 ```visualbasic
 ' 二進位輸入實時轉換
@@ -220,7 +220,7 @@ ButtonWrite_Click()             ' 寫入按鈕
   └─ 傳送 "WRITE " + decimalValue + vbLf
 ```
 
-#### 效能計數器模塊
+#### 效能計數器模組
 
 ```visualbasic
 ' 初始化效能計數器
@@ -230,7 +230,7 @@ InitializePerformanceCounters()
   └─ 預熱計數器：呼叫 NextValue() 一次
 ```
 
-#### 輔助與清理模塊
+#### 輔助與清理模組
 
 ```visualbasic
 ' 顏色決定邏輯
@@ -274,7 +274,7 @@ OnFormClosing()                 ' 視窗關閉時
   └─ CleanupResources()
 ```
 
-#### 錯誤處理與日誌模塊
+#### 錯誤處理與日誌模組
 
 ```visualbasic
 ' 錯誤處理
