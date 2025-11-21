@@ -51,7 +51,7 @@ Last Update 2025-11-21 12:41
 │   │   ├─ 藍芽通訊協議
 │   │   └─ 事件處理與清理
 │   │
-│   ├── Form1.Designer.vb             # Windows Form UI 設計檔（自動生成）
+│   ├── Form1.Designer.vb             # Windows Form UI 設計檔
 │   │   └─ 控件配置、佈局定義
 │   │
 │   └── ApplicationEvents.vb          # 應用程式生命週期事件
@@ -64,7 +64,7 @@ Last Update 2025-11-21 12:41
 │   │       ├─ 啟動表單設定
 │   │       └─ 應用程式事件
 │   │
-│   └── (Form1.resx)                  # 資源檔案（需要時自動生成）
+│   └── (Form1.resx)                  # 資源檔案
 │
 ├── 📚 文件
 │   ├── README.md                     # 專案說明文件（本檔案）
